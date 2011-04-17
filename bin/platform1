@@ -80,7 +80,7 @@ class Platform1Command < Clamp::Command
   end
 
   def application_url
-    "http://localhost:#{passenger_port}/"
+    "http://127.0.0.1:#{passenger_port}/"
   end
 
   def sh(command)
