@@ -4,7 +4,7 @@ $:.push File.expand_path("../lib", __FILE__)
 Gem::Specification.new do |gem|
   
   gem.name        = "platform1"
-  gem.version     = "0.0.2"
+  gem.version     = "0.0.3.dev"
   gem.platform    = Gem::Platform::RUBY
   
   gem.authors     = ["Mike Williams"]
