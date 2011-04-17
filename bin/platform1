@@ -53,8 +53,14 @@ class Platform1Command < Clamp::Command
 
   subcommand "open", "Open app in a browser." do
 
+    parameter "[PATH]", "a path to append to the app url"
+    
     def execute
-      Launchy.open(application_url)
+      url = application_url
+      if path
+        url += path.sub(%r{^/}, '')
+      end
+      Launchy.open(url)
     end
 
   end
