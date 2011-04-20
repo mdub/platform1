@@ -56,15 +56,19 @@ class Platform1Command < Clamp::Command
     parameter "[PATH]", "a path to append to the app url"
     
     def execute
-      url = application_url
-      if path
-        url += path.sub(%r{^/}, '')
-      end
-      Launchy.open(url)
+      Launchy.open(url(path))
     end
 
   end
 
+  subcommand "url", "Print application url." do
+        
+    def execute
+      puts application_url
+    end
+
+  end
+  
   subcommand "restart", "Ask app to restart" do
 
     def execute
@@ -83,6 +87,14 @@ class Platform1Command < Clamp::Command
     "http://127.0.0.1:#{passenger_port}/"
   end
 
+  def url(path = nil)
+    url = application_url
+    if path
+      url += path.sub(%r{^/}, '')
+    end
+    url
+  end
+  
   def sh(command)
     system(command) || raise("Error running: #{command.inspect}")
   end
