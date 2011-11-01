@@ -11,6 +11,8 @@ class Platform1Command < Clamp::Command
     Platform1 helps you serve your Rails/Rack app using Passenger Standalone.
   }
 
+  option "--no-warn", :flag, "don't print warnings"
+
   subcommand "init", "Prepare to serve a new app." do
 
     self.description = %{
@@ -30,7 +32,11 @@ class Platform1Command < Clamp::Command
   subcommand "start", "Start Passenger Standalone." do
 
     def execute
-      sh("passenger start -p #{passenger_port} -d")
+      if pid = passenger_pid
+        warn "already UP (pid #{pid})"
+      else
+        sh("passenger start -p #{passenger_port} -d")
+      end
     end
 
   end
@@ -38,7 +44,11 @@ class Platform1Command < Clamp::Command
   subcommand "stop", "Stop Passenger Standalone." do
 
     def execute
-      sh("passenger stop -p #{passenger_port}")
+      if passenger_pid
+        sh("passenger stop -p #{passenger_port}")
+      else
+        warn "already DOWN"
+      end
     end
 
   end
@@ -46,7 +56,11 @@ class Platform1Command < Clamp::Command
   subcommand "status", "Show Passenger status." do
 
     def execute
-      sh("passenger status -p #{passenger_port}")
+      if pid = passenger_pid
+        puts "UP (pid #{pid})"
+      else
+        puts "DOWN"
+      end
     end
 
   end
@@ -91,6 +105,21 @@ class Platform1Command < Clamp::Command
     configuration["port"] || signal_usage_error("port not defined: please run 'init' first")
   end
 
+  def passenger_pid
+    return nil unless File.exists?(passenger_pid_file)
+    pid = Integer(File.read(passenger_pid_file))
+    begin
+      Process.kill(0, pid) # check that it's actually running
+      pid
+    rescue Errno::ESRCH
+      nil
+    end
+  end
+
+  def passenger_pid_file
+    "tmp/pids/passenger.#{passenger_port}.pid"
+  end
+
   def application_url
     "http://127.0.0.1:#{passenger_port}/"
   end
@@ -105,6 +134,10 @@ class Platform1Command < Clamp::Command
 
   def sh(command)
     system(command) || raise("Error running: #{command.inspect}")
+  end
+
+  def warn(message)
+    $stderr.puts(message) unless no_warn?
   end
 
   def config_file
