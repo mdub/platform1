@@ -51,10 +51,18 @@ class Platform1Command < Clamp::Command
 
   end
 
+  subcommand "run", "Run Passenger Standalone." do
+
+    def execute
+      sh("passenger start -p #{passenger_port}")
+    end
+
+  end
+
   subcommand "open", "Open app in a browser." do
 
     parameter "[PATH]", "a path to append to the app url"
-    
+
     def execute
       Launchy.open(url(path))
     end
@@ -62,13 +70,13 @@ class Platform1Command < Clamp::Command
   end
 
   subcommand "url", "Print application url." do
-        
+
     def execute
       puts application_url
     end
 
   end
-  
+
   subcommand "restart", "Ask app to restart" do
 
     def execute
@@ -78,7 +86,7 @@ class Platform1Command < Clamp::Command
   end
 
   private
-  
+
   def passenger_port
     configuration["port"] || signal_usage_error("port not defined: please run 'init' first")
   end
@@ -94,7 +102,7 @@ class Platform1Command < Clamp::Command
     end
     url
   end
-  
+
   def sh(command)
     system(command) || raise("Error running: #{command.inspect}")
   end
