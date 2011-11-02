@@ -39,7 +39,13 @@ class Platform1Command < Clamp::Command
 
   end
 
-  subcommand "start", "Start Passenger Standalone." do
+  subcommand "start", "Start the server." do
+
+    self.description = %{
+      Start Passenger Standalone, as a daemon process.
+
+      Succeeds, with a warning, if the server is already running.
+    }
 
     include Warnings
 
@@ -53,7 +59,13 @@ class Platform1Command < Clamp::Command
 
   end
 
-  subcommand "stop", "Stop Passenger Standalone." do
+  subcommand "stop", "Stop the server." do
+
+    self.description = %{
+      Stop Passenger Standalone.
+
+      Succeeds, with a warning, if the server is not running.
+    }
 
     include Warnings
 
@@ -68,6 +80,13 @@ class Platform1Command < Clamp::Command
   end
 
   subcommand "status", "Show Passenger status." do
+
+    self.description = %{
+      Show status of the Passenger Standalone server.
+
+      Prints "UP", plus the server pid, if the server is running.
+      Otherwise, prints "DOWN".
+    }
 
     def execute
       if pid = passenger_pid
