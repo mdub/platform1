@@ -154,7 +154,7 @@ class Platform1Command < Clamp::Command
   end
 
   def application_url
-    "http://127.0.0.1:#{passenger_port}/"
+    "http://localhost:#{passenger_port}/"
   end
 
   def url(path = nil)
