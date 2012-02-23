@@ -2,4 +2,5 @@
 
 # Just an alias for "platform1"
 
-load File.join(File.dirname(File.realpath(__FILE__)), "platform1")
+require "pathname"
+load (Pathname(__FILE__).realpath.parent + "platform1")
